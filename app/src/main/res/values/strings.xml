@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CSC250_DiceRoller</string>
+    <string name="d8">d8</string>
 </resources>
