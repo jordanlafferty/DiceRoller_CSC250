@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -38,13 +39,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onRollButtonPressed(View v) {
-        //get the qty as an int
+        //do we have everything we need to roll?
         String qtyString = this.qtyTV.getText().toString();
+        String fullDiceString = this.selectedDieTV.getText().toString(); //like "D4" or "D6"
+        //get the qty as an int
+        String errorMsg = "";
+        if (qtyString.length() == 0)
+        {
+            errorMsg = "You must enter a quantity before rolling";
+        }
+        else if(fullDiceString.length()== 0)
+        {
+            errorMsg= "You must select a die before rolling";
+        }
+
+        if (errorMsg.length()>0)
+        {
+            Toast t = Toast.makeText(this,errorMsg,Toast.LENGTH_LONG);
+            t.show(); //show is an instance method
+            //makeText is a class method because it's being named by a class
+            // class names usually start with a capital
+            //if we look up Toast.makeText we will see static by it
+            // LENGTH_LONG is a variable and a field
+            // constructors initially create instances
+            return; //immediately end this method, don't try to do any rolling
+        }
         int qtyInt = Integer.parseInt(qtyString);
         int[] theRolls = new int[qtyInt];
 
         //get the number of sides as an int
-        String fullDiceString = this.selectedDieTV.getText().toString(); //like "D4" or "D6"
+
         String trimmedDiceString = this.extractNumberOfSides(fullDiceString);
         //String trimmerDiceString = fullDiceString.substring(1);
         int numberOfSidesInt = Integer.parseInt(trimmedDiceString);
@@ -58,26 +82,26 @@ public class MainActivity extends AppCompatActivity {
         //FINISH HW HERE!
 
         int total = 0;
-        String display = "";
-
-        for (int i = 1; i <= qtyInt; i++)
+        String individualRolls = "";
+        for(int i = 0; i < theRolls.length; i++)
         {
-            int currRoll = r.nextInt(numberOfSidesInt);
-            total += currRoll;
-            display = display + String.valueOf(currRoll);
-            if (i < qtyInt)
+            theRolls[i] = r.nextInt(numberOfSidesInt)+1;
+            total = total + theRolls[i];
+            if(individualRolls.length() == 0)
             {
-                display = display + "+";
+                individualRolls = "" + theRolls[i];
             }
-
+            else
+            {
+                individualRolls = individualRolls + " + " + theRolls[i];
+            }
         }
-        String totalString = total + "";
 
-        this.totalTV.setText(totalString);
-        this.rollsTV.setText(display);
-
-
+        this.rollsTV.setText(individualRolls);
+        this.totalTV.setText("" + total);
     }
+
+
 
     public void diceButtonPressed(View v) {
         this.selectedDieTV.setText(v.getTag().toString());
