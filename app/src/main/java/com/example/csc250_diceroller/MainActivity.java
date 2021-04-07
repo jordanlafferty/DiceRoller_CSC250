@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView rollsTV;
     private TextView totalTV;
     private String currentQtyText;
+    private ListView rollsLV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         this.currentQtyText = "";
         this.rollsTV = this.findViewById(R.id.rollsTV);
         this.totalTV = this.findViewById(R.id.totalTV);
+        this.rollsLV = this.findViewById(R.id.rollsLV);
     }
 
     private String extractNumberOfSides(String diceType) {
@@ -64,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
             // constructors initially create instances
             return; //immediately end this method, don't try to do any rolling
         }
+
         int qtyInt = Integer.parseInt(qtyString);
         int[] theRolls = new int[qtyInt];
+        ArrayList<String> theRollsArrayList = new ArrayList<String>();
 
         //get the number of sides as an int
 
@@ -95,10 +102,14 @@ public class MainActivity extends AppCompatActivity {
             {
                 individualRolls = individualRolls + " + " + theRolls[i];
             }
+            theRollsArrayList.add("" + theRolls[i]);
         }
 
         this.rollsTV.setText(individualRolls);
         this.totalTV.setText("" + total);
+        //set the list view to show the content
+        ArrayAdapter<String> theAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, theRollsArrayList);
+        this.rollsLV.setAdapter(theAdapter);
     }
 
 
@@ -113,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         this.totalTV.setText(this.currentQtyText);
         this.selectedDieTV.setText(this.currentQtyText);
         this.rollsTV.setText(this.currentQtyText);
+
     }
 
     public void qtyButtonPressed(View v) {
